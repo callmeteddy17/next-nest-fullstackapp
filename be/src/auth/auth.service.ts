@@ -9,15 +9,32 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
     const isValidPassword = await comparePassword(pass, user.password);
-    if (!isValidPassword) {
-      return new UnauthorizedException();
+
+    if (!user || !isValidPassword) {
+      return null;
+    } else {
+      return user;
     }
-    const payload = { sub: user._id, email: user.email };
+  }
+  async login(user: any) {
+    const payload = { email: user.email, sub: user._id };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token: this.jwtService.sign(payload),
     };
   }
+  // async signIn(email: string, pass: string): Promise<any> {
+  //   const user = await this.usersService.findByEmail(email);
+  //   const isValidPassword = await comparePassword(pass, user.password);
+  //   if (!isValidPassword) {
+  //     // return new UnauthorizedException();
+  //     return 'test1 ';
+  //   }
+  //   const payload = { sub: user._id, email: user.email };
+  //   return {
+  //     access_token: await this.jwtService.signAsync(payload),
+  //   };
+  // }
 }
