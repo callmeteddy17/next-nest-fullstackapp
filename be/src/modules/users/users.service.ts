@@ -62,7 +62,7 @@ export class UsersService {
       .limit(pageSize)
       .skip(skip)
       .sort(sort as any)
-      .select('-password');
+      .select('-password'); // lấy tất cả trừ password
     return { result, totalPages };
   }
 
